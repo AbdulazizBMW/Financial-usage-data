@@ -78,7 +78,7 @@ async function main() {
   const { createApp } = await import('../index.js');
   const { closeDb } = await import('../db.js');
   const { app, db } = await createApp();
-  const server = app.listen(0, '127.0.0.1');
+  const server = app.listen(0, '0.0.0.0');
   await new Promise<void>((resolve) => server.once('listening', () => resolve()));
   const address = server.address();
   const port = typeof address === 'object' && address ? address.port : 0;
