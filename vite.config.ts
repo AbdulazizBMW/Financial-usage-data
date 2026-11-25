@@ -1,12 +1,13 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), tailwindcss()],
   build: {
     outDir: 'dist/client',
     emptyOutDir: true,
-    chunkSizeWarningLimit: 1200
+    chunkSizeWarningLimit: 1500
   },
   server: {
     port: 5173,
