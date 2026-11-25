@@ -5,6 +5,7 @@ import { getLoan, listLoans, loadRates, loanTotals, getUserBase, rateOf } from '
 import { accountRow, cashAmounts, pickCurrency } from '../cash.js';
 import {
   asyncHandler,
+  badRequest,
   body,
   date,
   notFound,
@@ -226,7 +227,7 @@ loansRouter.post(
     );
     const outstanding = dec(loan.amount).minus(dec(paidRows[0]?.total ?? 0));
     if (dec(rawAmount).gt(outstanding)) {
-      throw new Error(
+      throw badRequest(
         `The repayment is larger than the outstanding balance of ${money(outstanding)} ${loan.currency}.`
       );
     }
