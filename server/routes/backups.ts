@@ -94,7 +94,7 @@ backupsRouter.post(
   asyncHandler(async (req, res) => {
     const { db, user } = getAuth(req);
     const backup = await createBackup(db, user.id, 'manual');
-    await logAudit(db, user.id, 'backup.create', 'backup', backup.id, { counts: backup.counts });
+    await logAudit(db, user.id, 'backup', backup.id, 'backup.create', { counts: backup.counts });
     res.status(201).json({ backup });
   })
 );
@@ -121,8 +121,8 @@ backupsRouter.delete(
   asyncHandler(async (req, res) => {
     const { db, user } = getAuth(req);
     const id = str(req.params.id, 'Backup id', { max: 64 });
-    const deleted = await db.query(`DELETE FROM backups WHERE id = $1 AND user_id = $2`, [id, user.id]);
-    if (!deleted.rowCount) throw notFound('Backup not found.');
+    const deleted = await db.query(`DELETE FROM backups WHERE id = $1 AND user_id = $2 RETURNING id`, [id, user.id]);
+    if (!deleted.rows.length) throw notFound('Backup not found.');
     res.json({ ok: true });
   })
 );
@@ -157,9 +157,9 @@ backupsRouter.post(
     // Always keep a safety copy of the current state before replacing it.
     await createBackup(db, user.id, 'manual');
 
-    await db.transaction(async (tx) => {
+    await db.tx(async (tx) => {
       const counts = await restoreUserBackup(tx, user.id, payload);
-      await logAudit(tx, user.id, 'backup.restore', 'backup', null, counts);
+      await logAudit(tx, user.id, 'backup', null, 'backup.restore', counts);
     });
 
     const after = await db.query<{ accounts: string; transactions: string; loans: string }>(

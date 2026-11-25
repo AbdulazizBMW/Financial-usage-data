@@ -1,10 +1,9 @@
-import { Router } from 'express';
+import { Router, type Request } from 'express';
 import PDFDocument from 'pdfkit';
 import ExcelJS from 'exceljs';
 import { getAuth } from '../auth.js';
 import { asyncHandler, notFound } from '../http.js';
-import { buildMonthly, type MonthlyData } from '../finance.js';
-import { getUserBase } from '../finance.js';
+import { buildMonthly, getUserBase, type MonthlyData } from '../finance.js';
 import { dec, money, monthLabel, parseMonth, todayISO } from '../money.js';
 
 export const reportsRouter = Router();
@@ -15,7 +14,7 @@ interface ReportContext {
   generatedAt: string;
 }
 
-async function loadReport(req: Parameters<Parameters<typeof asyncHandler>[0]>[0]): Promise<ReportContext> {
+async function loadReport(req: Request): Promise<ReportContext> {
   const { db, user } = getAuth(req);
   const monthParam = typeof req.query.month === 'string' ? req.query.month : undefined;
   const { year, month } = parseMonth(monthParam ?? todayISO().slice(0, 7));
@@ -288,12 +287,12 @@ function renderPdf(ctx: ReportContext): Promise<Buffer> {
       doc,
       ['Date', 'Type', 'Category', 'Account', 'Description', `Amount (${base})`],
       monthly.transactions.map((t) => [
-        t.date,
+        t.txn_date,
         t.kind === 'transfer' ? 'Transfer' : t.kind === 'income' ? 'Income' : 'Expense',
-        t.category ?? (t.kind === 'transfer' ? 'Internal transfer' : 'Uncategorised'),
-        t.account,
+        t.category_name ?? (t.kind === 'transfer' ? 'Internal transfer' : 'Uncategorised'),
+        t.account_name,
         t.description || '—',
-        t.kind === 'expense' ? `-${moneyText(t.baseAmount, base)}` : moneyText(t.baseAmount, base)
+        t.kind === 'expense' ? `-${moneyText(t.base_amount, base)}` : moneyText(t.base_amount, base)
       ]),
       [58, 46, 90, 80, 165, 76],
       { align: ['left', 'left', 'left', 'left', 'left', 'right'] }
@@ -496,7 +495,15 @@ async function renderXlsx(ctx: ReportContext): Promise<Buffer> {
   monthly.transactions
     .filter((t) => t.kind === 'income')
     .forEach((t) => {
-      const row = income.addRow([t.date, t.category ?? 'Uncategorised', t.description, t.account, t.currency, Number(t.amount), Number(t.baseAmount)]);
+      const row = income.addRow([
+        t.txn_date,
+        t.category_name ?? 'Uncategorised',
+        t.description,
+        t.account_name,
+        t.currency,
+        Number(t.amount),
+        Number(t.base_amount)
+      ]);
       row.getCell(6).numFmt = numFmt;
       row.getCell(7).numFmt = numFmt;
     });
@@ -511,7 +518,15 @@ async function renderXlsx(ctx: ReportContext): Promise<Buffer> {
   monthly.transactions
     .filter((t) => t.kind === 'expense')
     .forEach((t) => {
-      const row = expenses.addRow([t.date, t.category ?? 'Uncategorised', t.description, t.account, t.currency, Number(t.amount), Number(t.baseAmount)]);
+      const row = expenses.addRow([
+        t.txn_date,
+        t.category_name ?? 'Uncategorised',
+        t.description,
+        t.account_name,
+        t.currency,
+        Number(t.amount),
+        Number(t.base_amount)
+      ]);
       row.getCell(6).numFmt = numFmt;
       row.getCell(7).numFmt = numFmt;
     });
@@ -580,15 +595,15 @@ async function renderXlsx(ctx: ReportContext): Promise<Buffer> {
   head(daily, ['Date', 'Type', 'Category', 'Description', 'Account', 'Payment method', 'Currency', 'Amount', `Amount (${base})`]);
   monthly.transactions.forEach((t) => {
     const row = daily.addRow([
-      t.date,
+      t.txn_date,
       t.kind === 'transfer' ? 'Transfer' : t.kind === 'income' ? 'Income' : 'Expense',
-      t.category ?? (t.kind === 'transfer' ? 'Internal transfer' : 'Uncategorised'),
+      t.category_name ?? (t.kind === 'transfer' ? 'Internal transfer' : 'Uncategorised'),
       t.description,
-      t.account,
-      t.paymentMethod,
+      t.account_name,
+      t.payment_method,
       t.currency,
       Number(t.amount),
-      Number(t.baseAmount)
+      Number(t.base_amount)
     ]);
     row.getCell(8).numFmt = numFmt;
     row.getCell(9).numFmt = numFmt;
@@ -646,15 +661,15 @@ reportsRouter.get(
     ctx.monthly.transactions.forEach((t) => {
       rows.push(
         [
-          t.date,
+          t.txn_date,
           t.kind,
-          t.category ?? (t.kind === 'transfer' ? 'Internal transfer' : 'Uncategorised'),
+          t.category_name ?? (t.kind === 'transfer' ? 'Internal transfer' : 'Uncategorised'),
           t.description,
-          t.account,
-          t.paymentMethod,
+          t.account_name,
+          t.payment_method,
           t.currency,
           t.amount,
-          t.baseAmount
+          t.base_amount
         ]
           .map(csvEscape)
           .join(',')
