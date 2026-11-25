@@ -82,9 +82,12 @@ export interface DateRange {
 }
 
 export function resolveRange(presetRaw: unknown, fromRaw?: unknown, toRaw?: unknown): DateRange {
+  const explicitDates = isValidDate(fromRaw) || isValidDate(toRaw);
   const preset = (RANGE_PRESETS as readonly string[]).includes(String(presetRaw))
     ? (presetRaw as RangePreset)
-    : 'this_month';
+    : explicitDates
+      ? 'custom'
+      : 'this_month';
   const today = todayISO();
   const now = new Date(`${today}T00:00:00Z`);
   const year = now.getUTCFullYear();
