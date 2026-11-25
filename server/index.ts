@@ -82,7 +82,7 @@ export async function createApp() {
       res.status(413).json({ error: 'That file is too large. Backups must be under 25 MB.' });
       return;
     }
-    console.error('[server] unhandled error:', err?.message ?? error);
+    console.error('[server] unhandled error:', (error as Error)?.stack ?? err?.message ?? error);
     res.status(500).json({ error: 'Something went wrong on our side. Please try again.' });
   });
 
