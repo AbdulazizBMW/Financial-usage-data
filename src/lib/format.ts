@@ -1,7 +1,8 @@
 export const CURRENCY_SYMBOLS: Record<string, string> = { UZS: 'soʻm', USD: '$' };
 
-export function money(value: string | number | null | undefined, currency = ''): string {
-  const numeric = Number(value ?? 0);
+export function money(value: unknown, currency = ''): string {
+  const raw = Array.isArray(value) ? value[0] : value;
+  const numeric = Number(raw ?? 0);
   const safe = Number.isFinite(numeric) ? numeric : 0;
   const formatted = safe.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   return currency ? `${formatted} ${currency}` : formatted;

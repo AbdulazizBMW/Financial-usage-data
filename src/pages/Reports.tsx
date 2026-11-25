@@ -80,7 +80,7 @@ export default function Reports() {
           </div>
           <div className="flex flex-col gap-2 sm:items-end">
             <a href={downloadUrl.pdf(month)} target="_blank" rel="noreferrer" className="w-full sm:w-auto">
-              <Button size="lg" className="w-full px-6 py-3 text-sm font-semibold tracking-wide sm:w-auto">DOWNLOAD MONTHLY REPORT</Button>
+              <Button className="w-full px-6 py-3 text-sm font-semibold tracking-wide sm:w-auto">DOWNLOAD MONTHLY REPORT</Button>
             </a>
             <div className="flex flex-wrap gap-2">
               <a href={downloadUrl.xlsx(month)} target="_blank" rel="noreferrer">
