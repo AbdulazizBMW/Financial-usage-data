@@ -123,7 +123,7 @@ async function main() {
     status(cash, 201, 'create cash account');
     const bank = await call('POST', '/api/accounts', {
       cookie,
-      body: { name: 'Bank Card', type: 'bank_card', currency: 'UZS', openingBalance: '0', openingDate: '2026-01-05' }
+      body: { name: 'Bank Card', type: 'bank', currency: 'UZS', openingBalance: '0', openingDate: '2026-01-05' }
     });
     status(bank, 201, 'create bank account');
     const cashId = cash.data.id as string;
@@ -134,7 +134,7 @@ async function main() {
     const balanceOf = (id: string) => {
       const found = (accountList.data.accounts as Json[]).find((a) => a.id === id);
       assert.ok(found, `account ${id} present`);
-      return found!.balance ?? found!.currentBalance ?? found!.closingBalance;
+      return found!.balance;
     };
     near(balanceOf(cashId), 1000, 'cash opening balance');
     near(balanceOf(bankId), 0, 'bank opening balance');
@@ -210,7 +210,7 @@ async function main() {
     const afterTransfer = await call('GET', '/api/accounts', { cookie });
     const balAfter = (id: string) => {
       const found = (afterTransfer.data.accounts as Json[]).find((a) => a.id === id)!;
-      return found.balance ?? found.currentBalance ?? found.closingBalance;
+      return found.balance;
     };
     near(balAfter(cashId), 2199.75, 'cash after transfer');
     near(balAfter(bankId), 300, 'bank after transfer');
