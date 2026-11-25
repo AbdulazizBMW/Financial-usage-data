@@ -340,7 +340,7 @@ export async function listTransactions(q: Queryable, userId: string, f: TxnFilte
   };
   const order = sorts[f.sort ?? 'date_desc'] ?? sorts.date_desc;
   const limit = Math.min(Math.max(Number(f.limit) || 300, 1), 2000);
-  params.push(limit);
+  const limitParam = push(limit);
 
   const { rows } = await q.query<TxnRow>(
     `SELECT t.id, t.kind, to_char(t.txn_date, 'YYYY-MM-DD') AS txn_date, t.amount, t.currency, t.fx_rate,
@@ -356,7 +356,7 @@ export async function listTransactions(q: Queryable, userId: string, f: TxnFilte
        LEFT JOIN accounts ca ON ca.id = t.counter_account_id
       WHERE ${where.join(' AND ')}
       ORDER BY ${order}
-      LIMIT ${params.length}`,
+      LIMIT ${limitParam}`,
     params
   );
   return rows;
