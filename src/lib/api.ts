@@ -269,7 +269,14 @@ export const api = {
     search?: string;
     sort?: string;
     limit?: number;
-  }) => api.get<{ range: Dashboard['range']; transactions: Txn[]; summary: Record<string, string | number> }>(`/transactions${qs(params)}`),
+  }) =>
+    api.get<{
+      range: Dashboard['range'];
+      transactions: Txn[];
+      summary: Record<string, string | number>;
+      daily: { date: string; income: string; expense: string; net: string }[];
+      byCurrency: { currency: string; income: string; expense: string; net: string }[];
+    }>(`/transactions${qs(params)}`),
   createTransaction: (body: Record<string, unknown>) => api.post<{ transaction: Txn; id: string }>('/transactions', body),
   updateTransaction: (id: string, body: Record<string, unknown>) => api.patch<{ ok: true }>(`/transactions/${id}`, body),
   deleteTransaction: (id: string) => api.del<{ ok: true }>(`/transactions/${id}`),
