@@ -104,12 +104,13 @@ backupsRouter.get(
   asyncHandler(async (req, res) => {
     const { db, user } = getAuth(req);
     const id = str(req.params.id, 'Backup id', { max: 64 });
-    const row = await db.query<{ payload: BackupPayload; created_at: string }>(
+    const row = await db.query<{ payload: BackupPayload; created_at: string | Date }>(
       `SELECT payload, created_at FROM backups WHERE id = $1 AND user_id = $2`,
       [id, user.id]
     );
     if (!row.rows[0]) throw notFound('Backup not found.');
-    const stamp = row.rows[0].created_at.slice(0, 10);
+    const createdAt = row.rows[0].created_at;
+    const stamp = (createdAt instanceof Date ? createdAt.toISOString() : String(createdAt)).slice(0, 10);
     res.setHeader('Content-Type', 'application/json; charset=utf-8');
     res.setHeader('Content-Disposition', `attachment; filename="finora-backup-${stamp}.json"`);
     res.end(JSON.stringify(row.rows[0].payload, null, 2));
