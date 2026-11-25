@@ -100,7 +100,7 @@ export default function Monthly() {
                       <CartesianGrid strokeDasharray="3 3" stroke="rgba(100,116,139,0.18)" vertical={false} />
                       <XAxis dataKey="label" tick={{ fontSize: 10 }} tickLine={false} axisLine={false} />
                       <YAxis tickFormatter={(value) => compact(value)} tick={{ fontSize: 11 }} tickLine={false} axisLine={false} width={52} />
-                      <Tooltip formatter={(value: number) => money(value, base)} contentStyle={{ borderRadius: 12, fontSize: 12 }} />
+                      <Tooltip formatter={(value) => money(value, base)} contentStyle={{ borderRadius: 12, fontSize: 12 }} />
                       <Legend wrapperStyle={{ fontSize: 11 }} />
                       <Bar dataKey="Income" fill="#10b981" radius={[4, 4, 0, 0]} />
                       <Bar dataKey="Expenses" fill="#ef4444" radius={[4, 4, 0, 0]} />

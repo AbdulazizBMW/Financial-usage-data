@@ -347,7 +347,7 @@ export default function LoansView({ direction }: { direction: 'lend' | 'borrow' 
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(100,116,139,0.18)" vertical={false} />
                 <XAxis dataKey="name" tick={{ fontSize: 10 }} tickLine={false} axisLine={false} interval={0} angle={-12} height={44} />
                 <YAxis tickFormatter={(value) => compact(value)} tick={{ fontSize: 11 }} tickLine={false} axisLine={false} width={52} />
-                <Tooltip formatter={(value: number) => money(value, baseCurrency)} contentStyle={{ borderRadius: 12, fontSize: 12 }} />
+                <Tooltip formatter={(value) => money(value, baseCurrency)} contentStyle={{ borderRadius: 12, fontSize: 12 }} />
                 <Legend wrapperStyle={{ fontSize: 11 }} />
                 <Bar dataKey="Outstanding" fill="#f59e0b" radius={[4, 4, 0, 0]} />
                 <Bar dataKey="Repaid" fill="#10b981" radius={[4, 4, 0, 0]} />

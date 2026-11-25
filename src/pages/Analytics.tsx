@@ -186,7 +186,7 @@ export default function Analytics() {
                     <CartesianGrid strokeDasharray="3 3" stroke="rgba(100,116,139,0.18)" vertical={false} />
                     <XAxis dataKey="label" tick={{ fontSize: 10 }} tickLine={false} axisLine={false} />
                     <YAxis tickFormatter={(value) => compact(value)} tick={{ fontSize: 11 }} tickLine={false} axisLine={false} width={54} />
-                    <Tooltip formatter={(value: number) => money(value, base)} contentStyle={{ borderRadius: 12, fontSize: 12 }} />
+                    <Tooltip formatter={(value) => money(value, base)} contentStyle={{ borderRadius: 12, fontSize: 12 }} />
                     <Legend wrapperStyle={{ fontSize: 11 }} />
                     <Bar dataKey="Income" fill="#10b981" radius={[4, 4, 0, 0]} />
                     <Bar dataKey="Expenses" fill="#ef4444" radius={[4, 4, 0, 0]} />
@@ -219,7 +219,7 @@ export default function Analytics() {
                       <CartesianGrid strokeDasharray="3 3" stroke="rgba(100,116,139,0.18)" vertical={false} />
                       <XAxis dataKey="label" tick={{ fontSize: 10 }} tickLine={false} axisLine={false} />
                       <YAxis tickFormatter={(value) => compact(value)} tick={{ fontSize: 11 }} tickLine={false} axisLine={false} width={54} />
-                      <Tooltip formatter={(value: number) => money(value, base)} contentStyle={{ borderRadius: 12, fontSize: 12 }} />
+                      <Tooltip formatter={(value) => money(value, base)} contentStyle={{ borderRadius: 12, fontSize: 12 }} />
                       <Legend wrapperStyle={{ fontSize: 11 }} />
                       <Area type="monotone" dataKey="Income" stroke="#10b981" fill="url(#incomeGradient)" strokeWidth={2} />
                       <Area type="monotone" dataKey="Expenses" stroke="#ef4444" fill="url(#expenseGradient)" strokeWidth={2} />
@@ -242,7 +242,7 @@ export default function Analytics() {
                           <Cell key={entry.name} fill={PALETTE[index % PALETTE.length]} />
                         ))}
                       </Pie>
-                      <Tooltip formatter={(value: number) => money(value, base)} contentStyle={{ borderRadius: 12, fontSize: 12 }} />
+                      <Tooltip formatter={(value) => money(value, base)} contentStyle={{ borderRadius: 12, fontSize: 12 }} />
                     </PieChart>
                   </ResponsiveContainer>
                 ) : (
@@ -275,7 +275,7 @@ export default function Analytics() {
                       <CartesianGrid strokeDasharray="3 3" stroke="rgba(100,116,139,0.18)" vertical={false} />
                       <XAxis dataKey="label" tick={{ fontSize: 10 }} tickLine={false} axisLine={false} />
                       <YAxis tickFormatter={(value) => compact(value)} tick={{ fontSize: 11 }} tickLine={false} axisLine={false} width={54} />
-                      <Tooltip formatter={(value: number) => money(value, base)} contentStyle={{ borderRadius: 12, fontSize: 12 }} />
+                      <Tooltip formatter={(value) => money(value, base)} contentStyle={{ borderRadius: 12, fontSize: 12 }} />
                       <Line type="monotone" dataKey="Balance" stroke="#1d66ef" strokeWidth={2.5} dot={{ r: 3 }} />
                     </LineChart>
                   </ResponsiveContainer>
